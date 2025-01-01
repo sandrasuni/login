@@ -1,7 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:login/profile.dart';
+import 'package:login/registration.dart';
+import 'package:login/services/firebaseauthservice.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  TextEditingController emailController = TextEditingController();
+
+  TextEditingController passwordController = TextEditingController();
+
+  bool isloading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +38,7 @@ class LoginPage extends StatelessWidget {
               height: 20,
             ),
             TextField(
+              controller: emailController,
               decoration: InputDecoration(
                   enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide.none,
@@ -40,6 +55,7 @@ class LoginPage extends StatelessWidget {
               height: 10,
             ),
             TextField(
+              controller: passwordController,
               decoration: InputDecoration(
                   enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide.none,
@@ -59,11 +75,24 @@ class LoginPage extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                   fixedSize: Size(700, 40),
                   backgroundColor: Color.fromARGB(255, 133, 9, 79)),
-              onPressed: () {},
-              child: Text(
-                'Login',
-                style: TextStyle(color: Colors.white),
-              ),
+              onPressed: () async {
+                setState(() {
+                  isloading = true;
+                });
+                await login(
+                    email: emailController.text,
+                    password: passwordController.text,
+                    context: context);
+                setState(() {
+                  isloading = false;
+                });
+              },
+              child: isloading
+                  ? CircularProgressIndicator()
+                  : Text(
+                      'Login',
+                      style: TextStyle(color: Colors.white),
+                    ),
             ),
             ElevatedButton(
                 style: ElevatedButton.styleFrom(
@@ -83,10 +112,10 @@ class LoginPage extends StatelessWidget {
                   ),
                   GestureDetector(
                       onTap: () {
-                        Navigator.push(
+                        Navigator.pop(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => LoginPage()));
+                                builder: (context) => Registrationpage()));
                       },
                       child: Text('Sign Up',
                           style: TextStyle(color: Colors.pink))),

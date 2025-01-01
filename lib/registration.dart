@@ -1,8 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:login/login.dart';
+import 'package:login/services/firebaseauthservice.dart';
 
-class Registrationpage extends StatelessWidget {
-  const Registrationpage({super.key});
+class Registrationpage extends StatefulWidget {
+  @override
+  State<Registrationpage> createState() => _RegistrationpageState();
+}
+
+class _RegistrationpageState extends State<Registrationpage> {
+  // const Registrationpage({super.key});
+  TextEditingController usernameController = TextEditingController();
+
+  TextEditingController emailController = TextEditingController();
+
+  TextEditingController passwordController = TextEditingController();
+
+  TextEditingController confirmPasswordController = TextEditingController();
+
+  bool isloading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +40,7 @@ class Registrationpage extends StatelessWidget {
               height: 20,
             ),
             TextField(
+              controller: usernameController,
               decoration: InputDecoration(
                   enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide.none,
@@ -41,6 +57,7 @@ class Registrationpage extends StatelessWidget {
               height: 10,
             ),
             TextField(
+              controller: emailController,
               decoration: InputDecoration(
                   enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide.none,
@@ -57,6 +74,7 @@ class Registrationpage extends StatelessWidget {
               height: 10,
             ),
             TextField(
+              controller: passwordController,
               decoration: InputDecoration(
                   enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide.none,
@@ -73,6 +91,7 @@ class Registrationpage extends StatelessWidget {
               height: 10,
             ),
             TextField(
+              controller: confirmPasswordController,
               decoration: InputDecoration(
                   enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide.none,
@@ -92,11 +111,26 @@ class Registrationpage extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                   fixedSize: Size(700, 40),
                   backgroundColor: Color.fromARGB(255, 133, 9, 79)),
-              onPressed: () {},
-              child: Text(
-                'Sign up',
-                style: TextStyle(color: Colors.white),
-              ),
+              onPressed: () async {
+                setState(() {
+                  isloading = true;
+                });
+                await signup(
+                    username: usernameController.text,
+                    email: emailController.text,
+                    password: passwordController.text,
+                    confirmPassword: confirmPasswordController.text,
+                    context: context);
+                setState(() {
+                  isloading = false;
+                });
+              },
+              child: isloading
+                  ? CircularProgressIndicator()
+                  : Text(
+                      'Sign up',
+                      style: TextStyle(color: Colors.white),
+                    ),
             ),
             Text(
               'Or',
